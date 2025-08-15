@@ -6,15 +6,46 @@ API REST em **Node.js + TypeScript (ESM)** com **Express**, **Sequelize (sequeli
 
 ## ✨ Funcionalidades
 
-* Registro e login com **JWT**
-* CRUD básico de **Projetos** (mínimo: criar e listar do usuário autenticado)
-* Integração **GitHub**:
+Rotas da API
 
-  * `GET /projects/:id/github/:username` → Busca **5 últimos repositórios públicos** do `:username`, faz **upsert** e vincula ao `projectId`
-* **Redis** opcional para cache da chamada do GitHub (TTL 5 min)
-* **Logs** de requisições com *morgan* e **handler global de erros** (exibe stack em `NODE_ENV=development`)
+Legenda: (🔒 = requer JWT)
+
+Saúde & Docs
+
+GET /health — Healthcheck simples.
+
+GET /docs — Swagger UI.
+
+GET /openapi.yaml — Esquema OpenAPI (se exposto).
+
+Auth
+
+POST /auth/register — Cria usuário. Body: { name, email, password } → 201 retorna usuário.
+
+POST /auth/login — Autentica. Body: { email, password } → 200 { token }.
+
+Projects (🔒)
+
+POST /projects — Cria projeto do usuário logado. Body: { name, description? } → 201 Project.
+
+GET /projects — Lista projetos do usuário logado → 200 Project[].
+
+GET /projects/{id} — Detalha projeto do usuário → 200 Project.
+
+PUT /projects/{id} — Atualiza projeto do usuário. Body: { name?, description? } → 200 Project.
+
+DELETE /projects/{id} — Remove projeto do usuário → 204.
+
+GitHub (🔒)
+
+GET /projects/{id}/github/{username} — Busca 5 últimos repos do GitHub de username, faz upsert e vincula ao projeto id → 200 { projectId, repos: Repo[] }.
+
+Todas as rotas marcadas com 🔒 exigem header Authorization: Bearer <TOKEN>.
 
 ---
+
+
+
 
 ## 🧱 Stack
 
